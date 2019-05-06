@@ -1,0 +1,134 @@
+  {
+      "general": {
+          "seed": 42,
+          "base_path": "",
+          "device": "cpu",
+          "id": "config",
+          "description": "No consistency loss",
+          "server": "cluster",
+          # Remember to set the server has "cluster" when running anywhere other than your local machine.
+          # Note that this parameter is being ignore for now.
+          "commit_id": "",
+          "date": ""
+      },
+      "env":{
+          "name":"HalfCheetah-v2",
+          # All the models/agents/data-generators would use the environment specified here
+          "height": 64,
+          "width": 64,
+          "num_stack": 4,
+          "mode":"rgb",
+          "should_render":true,
+          "observation_space":{
+            "shape": [17,]
+            # When running locally, we need to set this field but when the code is run on server, this field would be set automatically.
+          },
+          "action_space":{
+            "shape": [6, ]
+            # When running locally, we need to set this field but when the code is run on server, this field would be set automatically.
+          }
+      },
+      "dataset": {
+          "base_path": "",
+          "name": "HalfCheetah-v2",
+          # Not that this is the name we are assigning to the dataset. The environment name is still read from "env" section
+          "num_trajectories": 10000,
+          # This variable is used for control the following:
+          # (i) Number of files generated during dataset generation.
+          # (ii) Number of files loaded during model training
+          "num_actions_per_trajectory": 300,
+          # Note that this parameter is ignored while loading the dataset and is inferred using sequence_length and imagination_length.
+          "num_workers": 0,
+          "should_load": true,
+          # For now, this flag is redundant while training and we use it only during debugging.
+          "should_generate": false,
+          "batch_size": 10,
+          # Note that the batch size for validation and test is half the batch size specified here.
+          "buffer_size": 10,
+          # Used to control how much data to load in memory at once. It should be an integer multiple of batch_size.
+          "sequence_length": 100,
+          "imagination_length": 10,
+          # sequence length and imagination lengths are used to decide how much data is to be loaded.
+          "split":{
+              "train": 0.8,
+              "val": 0.05,
+              "test": 0.15
+          },
+          "dataset_generation":{
+              "dataset_id": "long_horizon_video_prediction",
+              "should_generate_json": false,
+              # This param decides if the trajectories should also be persisted in the json format. We would be using that only during debugging.
+          }
+      },
+      "model": {
+          "imagination_model":{
+          # This is the model used to encode-decode the images and train the agent to learn to imagine.
+              "name": "learning_to_query",
+              # supported values recurrent_environment_simulator_obs_dependent_path_deterministic,
+              # recurrent_environment_simulator_pred_dependent_path_deterministic,
+              # learning_to_query
+              "latent_size": 100,
+              # latent size is same as the size of input to the state transition model
+              "hidden_state_size": 256,
+              # hidden_state_size depends on the size of output of the convolutional encoder.
+              # Supported values are: 1024, 256
+              "consistency_model": {
+                  "name": "euclidean",
+                  # supported values are cosine, euclidean and recurrent
+                  "alpha": 0.0
+              },
+              "imitation_learning_model":{
+                  "name": "mlp",
+                  "should_train": true,
+                  "alpha": 1.0
+              }
+
+          },
+          "expert_policy": {
+              "name": "normal_mlp",
+              # Allowed values are "normal_mlp" (which is the pretrained ppo model) and "random_policy"
+              "num_timesteps": 1000000,
+              "save_dir": "",
+              # Note that this field does not need to be set generally.
+              "hidden_size": 64,
+              "num_layers": 2,
+              "num_cpu": 48,
+              "should_convert_model": false,
+          },
+          "name": "imagination_model",
+          # The name should be one of the models that we support. We support "imagination_model" and "expert_policy"
+          "should_train": true,
+          "num_epochs": 100000,
+          "persist_per_epoch": -1,
+          "persist_best_model": false,
+          "early_stopping_patience": 150,
+          "use_sparse_embedding": false,
+          "save_dir": "",
+          "load_path": "7/best_model.tar",
+          # the loadpath would look something like this 2/model_epoch_101_timestamp_1534428832.tar
+          "should_load_model": false,
+          "modes": ["train", "val", "test"],
+              # Modes to perform during experiment. Supported values "train", "val", "test"
+          "optimizer": {
+            "name": "Adam",
+            # Write the name of optimizer class as is.
+            "learning_rate": 0.0001,
+            "scheduler_type": "exp",
+            # supported values exp, plateau.
+            "scheduler_gamma": 1.0,
+            "scheduler_patience": 10,
+            "l2_penalty": 0
+          }
+      },
+      "log": {
+          "file_path": ""
+      },
+      "plot": {
+          "base_path": ""
+      },
+      "spreadsheet": {
+          "keyfile_path": "",
+          "sheet_url": ""
+      }
+  }
+

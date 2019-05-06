@@ -1,0 +1,12 @@
+numpy
+gym
+addict
+mujoco-py<1.50.2,>=1.50.1
+pandas
+pyyaml
+attrs
+tensorflow
+torch
+opencv-python
+scikit-image
+psutil
