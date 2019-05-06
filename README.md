@@ -1,6 +1,6 @@
 # Consistent Dynamics
 
-Code for the paper "Learning Powerful Policies by Using Consistent Dynamics Mode" presented at Workshop on "Structure & Priors in Reinforcement Learning" at ICLR 2019. 
+Code for the paper "[Learning Powerful Policies by Using Consistent Dynamics Model](http://spirl.info/2019/camera-ready/spirl_camera-ready_15.pdf)" presented at Workshop on "Structure & Priors in Reinforcement Learning" at ICLR 2019. 
 
 Arxiv link coming soon!
 
